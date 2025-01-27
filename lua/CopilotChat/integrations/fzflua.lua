@@ -12,12 +12,17 @@ function M.pick(pick_actions, opts)
     return
   end
 
-  utils.exit_visual_mode()
+  utils.return_to_normal_mode()
   opts = vim.tbl_extend('force', {
     prompt = pick_actions.prompt .. '> ',
-    preview = fzflua.shell.raw_preview_action_cmd(function(items)
-      return string.format('echo "%s"', pick_actions.actions[items[1]].prompt)
-    end),
+    preview = function(items)
+      return pick_actions.actions[items[1]].prompt
+    end,
+    winopts = {
+      preview = {
+        wrap = 'wrap',
+      },
+    },
     actions = {
       ['default'] = function(selected)
         if not selected or vim.tbl_isempty(selected) then

@@ -207,6 +207,132 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/6877858?v=4",
       "profile": "http://dimalip.in",
       "contributions": ["code"]
+    },
+    {
+      "login": "jinzhongjia",
+      "name": "jinzhongjia",
+      "avatar_url": "https://avatars.githubusercontent.com/u/41784264?v=4",
+      "profile": "https://nvimer.org",
+      "contributions": ["doc"]
+    },
+    {
+      "login": "guill",
+      "name": "guill",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3157454?v=4",
+      "profile": "https://github.com/guill",
+      "contributions": ["code"]
+    },
+    {
+      "login": "sjonpaulbrown-cc",
+      "name": "Sjon-Paul Brown",
+      "avatar_url": "https://avatars.githubusercontent.com/u/81941908?v=4",
+      "profile": "https://github.com/sjonpaulbrown-cc",
+      "contributions": ["code"]
+    },
+    {
+      "login": "renxzen",
+      "name": "Renzo Mondragón",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13023797?v=4",
+      "profile": "https://github.com/renxzen",
+      "contributions": ["code", "doc"]
+    },
+    {
+      "login": "fjchen7",
+      "name": "fjchen7",
+      "avatar_url": "https://avatars.githubusercontent.com/u/10106636?v=4",
+      "profile": "https://github.com/fjchen7",
+      "contributions": ["code"]
+    },
+    {
+      "login": "radwo",
+      "name": "Radosław Woźniak",
+      "avatar_url": "https://avatars.githubusercontent.com/u/184065?v=4",
+      "profile": "https://github.com/radwo",
+      "contributions": ["code"]
+    },
+    {
+      "login": "JakubPecenka",
+      "name": "JakubPecenka",
+      "avatar_url": "https://avatars.githubusercontent.com/u/87969308?v=4",
+      "profile": "https://github.com/JakubPecenka",
+      "contributions": ["code"]
+    },
+    {
+      "login": "thomastthai",
+      "name": "thomastthai",
+      "avatar_url": "https://avatars.githubusercontent.com/u/16532581?v=4",
+      "profile": "https://github.com/thomastthai",
+      "contributions": ["doc"]
+    },
+    {
+      "login": "liskin",
+      "name": "Tomáš Janoušek",
+      "avatar_url": "https://avatars.githubusercontent.com/u/300342?v=4",
+      "profile": "https://lisk.in/",
+      "contributions": ["code"]
+    },
+    {
+      "login": "Moriango",
+      "name": "Toddneal Stallworth",
+      "avatar_url": "https://avatars.githubusercontent.com/u/43554061?v=4",
+      "profile": "https://github.com/Moriango",
+      "contributions": ["doc"]
+    },
+    {
+      "login": "taketwo",
+      "name": "Sergey Alexandrov",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1241736?v=4",
+      "profile": "https://github.com/taketwo",
+      "contributions": ["code"]
+    },
+    {
+      "login": "lemeb",
+      "name": "Léopold Mebazaa",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7331643?v=4",
+      "profile": "https://github.com/lemeb",
+      "contributions": ["code"]
+    },
+    {
+      "login": "atkodev",
+      "name": "JunKi Jin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14937572?v=4",
+      "profile": "https://atko.space",
+      "contributions": ["code"]
+    },
+    {
+      "login": "abdennourzahaf",
+      "name": "abdennourzahaf",
+      "avatar_url": "https://avatars.githubusercontent.com/u/62243290?v=4",
+      "profile": "https://github.com/abdennourzahaf",
+      "contributions": ["doc"]
+    },
+    {
+      "login": "josiahdenton",
+      "name": "Josiah",
+      "avatar_url": "https://avatars.githubusercontent.com/u/44758384?v=4",
+      "profile": "https://github.com/josiahdenton",
+      "contributions": ["code"]
+    },
+    {
+      "login": "tku137",
+      "name": "Tony Fischer",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3052212?v=4",
+      "profile": "https://github.com/tku137",
+      "contributions": ["code", "doc"]
+    },
+    {
+      "login": "Kohei-Wada",
+      "name": "Kohei Wada",
+      "avatar_url": "https://avatars.githubusercontent.com/u/64008205?v=4",
+      "profile": "https://qiita.com/program3152019",
+      "contributions": ["code"]
+    },
+    {
+      "login": "syaghoubi00",
+      "name": "Sebastian Yaghoubi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/79172513?v=4",
+      "profile": "https://zags.dev",
+      "contributions": ["doc"]
     }
   ],
   "contributorsPerLine": 7,

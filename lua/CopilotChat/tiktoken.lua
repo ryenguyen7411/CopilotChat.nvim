@@ -1,75 +1,66 @@
-local curl = require('plenary.curl')
-local tiktoken_core = nil
+local async = require('plenary.async')
+local notify = require('CopilotChat.notify')
+local utils = require('CopilotChat.utils')
+local current_tokenizer = nil
+local cache_dir = vim.fn.stdpath('cache')
+vim.fn.mkdir(tostring(cache_dir), 'p')
 
----Get the path of the cache directory
----@param fname string
----@return string
-local function get_cache_path(fname)
-  return vim.fn.stdpath('cache') .. '/' .. fname
-end
-
-local function file_exists(name)
-  local f = io.open(name, 'r')
-  if f ~= nil then
-    io.close(f)
-    return true
-  else
-    return false
-  end
+local tiktoken_ok, tiktoken_core = pcall(require, 'tiktoken_core')
+if not tiktoken_ok then
+  tiktoken_core = nil
 end
 
 --- Load tiktoken data from cache or download it
-local function load_tiktoken_data(done, model)
-  local tiktoken_url = 'https://openaipublic.blob.core.windows.net/encodings/cl100k_base.tiktoken'
-  -- If model is gpt-4o, use o200k_base.tiktoken
-  if model == 'gpt-4o' then
-    tiktoken_url = 'https://openaipublic.blob.core.windows.net/encodings/o200k_base.tiktoken'
-  end
-  local async
-  async = vim.loop.new_async(function()
-    -- Take filename after the last slash of the url
-    local cache_path = get_cache_path(tiktoken_url:match('.+/(.+)'))
-    if not file_exists(cache_path) then
-      vim.schedule(function()
-        curl.get(tiktoken_url, {
-          output = cache_path,
-        })
-      end)
-    end
+---@param tokenizer string The tokenizer to load
+local function load_tiktoken_data(tokenizer)
+  local tiktoken_url = 'https://openaipublic.blob.core.windows.net/encodings/'
+    .. tokenizer
+    .. '.tiktoken'
+  local cache_path = cache_dir .. '/' .. tiktoken_url:match('.+/(.+)')
 
-    done(cache_path)
-    async:close()
-  end)
-  async:send()
+  if utils.file_exists(cache_path) then
+    return cache_path
+  end
+
+  notify.publish(notify.STATUS, 'Downloading tiktoken data from ' .. tiktoken_url)
+
+  utils.curl_get(tiktoken_url, {
+    output = cache_path,
+  })
+
+  return cache_path
 end
 
 local M = {}
 
----@param model string|nil
-function M.setup(model)
-  local ok, core = pcall(require, 'tiktoken_core')
-  if not ok then
+--- Load the tiktoken module
+---@param tokenizer string The tokenizer to load
+M.load = function(tokenizer)
+  if not tiktoken_core then
     return
   end
 
-  load_tiktoken_data(function(path)
-    local special_tokens = {}
-    special_tokens['<|endoftext|>'] = 100257
-    special_tokens['<|fim_prefix|>'] = 100258
-    special_tokens['<|fim_middle|>'] = 100259
-    special_tokens['<|fim_suffix|>'] = 100260
-    special_tokens['<|endofprompt|>'] = 100276
-    local pat_str =
-      "(?i:'s|'t|'re|'ve|'m|'ll|'d)|[^\\r\\n\\p{L}\\p{N}]?\\p{L}+|\\p{N}{1,3}| ?[^\\s\\p{L}\\p{N}]+[\\r\\n]*|\\s*[\\r\\n]+|\\s+(?!\\S)|\\s+"
-    core.new(path, special_tokens, pat_str)
-    tiktoken_core = core
-  end, model)
+  if tokenizer == current_tokenizer then
+    return
+  end
+
+  local path = load_tiktoken_data(tokenizer)
+  async.util.scheduler()
+  local special_tokens = {}
+  special_tokens['<|endoftext|>'] = 100257
+  special_tokens['<|fim_prefix|>'] = 100258
+  special_tokens['<|fim_middle|>'] = 100259
+  special_tokens['<|fim_suffix|>'] = 100260
+  special_tokens['<|endofprompt|>'] = 100276
+  local pat_str =
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)|[^\\r\\n\\p{L}\\p{N}]?\\p{L}+|\\p{N}{1,3}| ?[^\\s\\p{L}\\p{N}]+[\\r\\n]*|\\s*[\\r\\n]+|\\s+(?!\\S)|\\s+"
+  tiktoken_core.new(path, special_tokens, pat_str)
+  current_tokenizer = tokenizer
 end
 
-function M.available()
-  return tiktoken_core ~= nil
-end
-
+--- Encode a prompt
+---@param prompt string The prompt to encode
+---@return table?
 function M.encode(prompt)
   if not tiktoken_core then
     return nil
@@ -84,6 +75,9 @@ function M.encode(prompt)
   return tiktoken_core.encode(prompt)
 end
 
+--- Count the tokens in a prompt
+---@param prompt string The prompt to count
+---@return number
 function M.count(prompt)
   if not tiktoken_core then
     return math.ceil(#prompt * 0.5) -- Fallback to 1/2 character count
