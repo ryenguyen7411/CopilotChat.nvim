@@ -18,8 +18,12 @@ function M.pick(pick_actions, opts)
     return
   end
 
-  utils.exit_visual_mode()
-  opts = themes.get_dropdown(opts or {})
+  utils.return_to_normal_mode()
+
+  if not (opts and opts.theme) then
+    opts = themes.get_dropdown(opts or {})
+  end
+
   pickers
     .new(opts, {
       prompt_title = pick_actions.prompt,
@@ -34,7 +38,7 @@ function M.pick(pick_actions, opts)
             0,
             -1,
             false,
-            vim.split(pick_actions.actions[entry[1]].prompt, '\n')
+            vim.split(pick_actions.actions[entry[1]].prompt or '', '\n')
           )
         end,
       }),

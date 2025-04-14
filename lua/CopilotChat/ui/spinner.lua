@@ -1,9 +1,4 @@
----@class CopilotChat.Spinner
----@field bufnr number
----@field set fun(self: CopilotChat.Spinner, text: string, virt_line: boolean)
----@field start fun(self: CopilotChat.Spinner)
----@field finish fun(self: CopilotChat.Spinner)
-
+local notify = require('CopilotChat.notify')
 local utils = require('CopilotChat.utils')
 local class = utils.class
 
@@ -20,11 +15,22 @@ local spinner_frames = {
   '⠏',
 }
 
+---@class CopilotChat.ui.Spinner : Class
+---@field ns number
+---@field bufnr number
+---@field timer table
+---@field index number
+---@field status string?
 local Spinner = class(function(self, bufnr)
-  self.ns = vim.api.nvim_create_namespace('copilot-chat-help')
+  self.ns = vim.api.nvim_create_namespace('copilot-chat-spinner')
   self.bufnr = bufnr
   self.timer = nil
   self.index = 1
+  self.status = nil
+
+  notify.listen(notify.STATUS, function(status)
+    self.status = tostring(status)
+  end)
 end)
 
 function Spinner:start()
@@ -37,13 +43,14 @@ function Spinner:start()
     0,
     100,
     vim.schedule_wrap(function()
-      if
-        not vim.api.nvim_buf_is_valid(self.bufnr)
-        or not vim.api.nvim_buf_is_loaded(self.bufnr)
-        or not self.timer
-      then
+      if not utils.buf_valid(self.bufnr) or not self.timer then
         self:finish()
         return
+      end
+
+      local frame = spinner_frames[self.index]
+      if self.status then
+        frame = self.status .. ' ' .. frame
       end
 
       vim.api.nvim_buf_set_extmark(
@@ -52,12 +59,12 @@ function Spinner:start()
         math.max(0, vim.api.nvim_buf_line_count(self.bufnr) - 1),
         0,
         {
-          id = self.ns,
+          id = 1,
           hl_mode = 'combine',
           priority = 100,
-          virt_text = vim.tbl_map(function(t)
-            return { t, 'CopilotChatSpinner' }
-          end, vim.split(spinner_frames[self.index], '\n')),
+          virt_text = {
+            { frame, 'CopilotChatSpinner' },
+          },
         }
       )
 
@@ -77,7 +84,7 @@ function Spinner:finish()
   timer:stop()
   timer:close()
 
-  vim.api.nvim_buf_del_extmark(self.bufnr, self.ns, self.ns)
+  vim.api.nvim_buf_del_extmark(self.bufnr, self.ns, 1)
 end
 
 return Spinner
